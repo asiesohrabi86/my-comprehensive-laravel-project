@@ -44,6 +44,7 @@ use App\Http\Controllers\Customer\SalesProcess\PaymentController as CustomerPaym
 use App\Http\Controllers\Customer\SalesProcess\ProfileCompletionController;
 use App\Http\Controllers\Customer\Profile\OrderController as ProfileOrderController;
 use App\Http\Controllers\Customer\Profile\FavoriteController;
+use App\Http\Controllers\Customer\Profile\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -508,6 +509,8 @@ Route::namespace('Profile')->group(function(){
     Route::get('/orders', [ProfileOrderController::class, 'index'])->name('customer.profile.orders');
     Route::get('/my-favorites', [FavoriteController::class, 'index'])->name('customer.profile.my-favorites');
     Route::get('/my-favorites/delete/{product}', [FavoriteController::class, 'delete'])->name('customer.profile.my-favorites.delete');
+    Route::get('/profile', [ProfileController::class, 'index'])->name('customer.profile.profile');
+    Route::put('/profile/update', [ProfileController::class, 'update'])->name('customer.profile.profile.update');
     // Route::post('/add-comment/product/{product:slug}', [MarketProductController::class, 'addComment'])->name('customer.market.add-comment');
     // Route::get('/add-to-favorite/product/{product:slug}', [MarketProductController::class, 'addToFavorite'])->name('customer.market.add-to-favorite');
 });
