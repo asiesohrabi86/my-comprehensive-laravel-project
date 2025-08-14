@@ -8,6 +8,7 @@ use App\Http\Services\Image\ImageService;
 use Illuminate\Http\Request;
 use App\Models\Content\Post;
 use App\Models\Content\PostCategory;
+use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
@@ -16,7 +17,12 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+
+    // public function __construct(){
+    //     $this->authorizeResource(Post::class, 'post');
+    // }
+    
+     public function index()
     {
         $posts = Post::orderBy('created_at', 'desc')->simplePaginate(15);
         return view('admin.content.post.index', compact('posts'));
@@ -29,6 +35,7 @@ class PostController extends Controller
      */
     public function create()
     {
+        // $this->authorize('create', Post::class);
         $postCategories = PostCategory::all();
         return view('admin.content.post.create', compact('postCategories'));
     }
@@ -62,7 +69,7 @@ class PostController extends Controller
             $inputs['image'] = $result;
         }
 
-        $inputs['author_id'] = 1;
+        $inputs['author_id'] = auth()->user()->id;
         $post = Post::create($inputs);
        return redirect()->route('admin.content.post.index')->with('swal-success', 'پست جدید با موفقیت ثبت شد');
     }
@@ -99,16 +106,60 @@ class PostController extends Controller
      */
     public function update(PostRequest $request, Post $post, ImageService $imageService)
     {
+        // روش اول بررسی gate
+        // if(!Gate::allows('update-post', $post)){
+        //     abort(403);
+        // }
+
+        // روش دوم بررسی gate
+        // وقتی گیت ریسپانس میفرسته
+        // $response = Gate::inspect('update-post');
+        // if($response->allowed()){
+        //     // عملیات ویرایش
+        // }else{
+        //     dd($response->message());
+        // }
+
+        // if(!Gate::forUser($user)->allows('update-post', $post)){
+        //     abort(403);
+        // }
+
+        // if(!Gate::denies('update-post', $post)){
+        //     abort(403);
+        // }
+
+        // if(Gate::any('update-post', 'delete-post')){
+           
+        // }
+
+        // if(Gate::none('update-post', 'delete-post')){
+           
+        // }
+
+        // if(!Gate::authorize('update-post', $post)){
+        //     abort(403);
+        // }
+
+        // if($request->user()->can('update', $post)){
+            
+        // }
+
+        // if($request->user()->cannot('update')){
+        //     abort(403);
+        // }
+
+        // $this->authorize('update' ,$post);
+
         $inputs = $request->all();
 
         $realTimestampStart = substr($request->published_at, 0, 10);
         $inputs['published_at'] = date("Y-m-d H:i:s", (int)$realTimestampStart);
 
-         // اگر کاربر در ویرایش، عکسی ارسال کرد، یعنی میخواهد عکس قبلی را پاک کند و عکس جدید را جای آن قرار دهد
+        // اگر کاربر در ویرایش، عکسی ارسال کرد، یعنی میخواهد عکس قبلی را پاک کند و عکس جدید را جای آن قرار دهد
         if($request->hasFile('image'))
         {
             if(!empty($post->image)){
-                 // میخواهیم عکس قبلی را پاک کنیم
+                // میخواهیم عکس قبلی را پاک کنیم
                 $imageService->deleteDirectoryAndFiles($post->image['directory']);
             }
 

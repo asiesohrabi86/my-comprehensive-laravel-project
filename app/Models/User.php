@@ -14,6 +14,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\User\Role;
+use App\Models\User\Permission;
 use App\Models\Market\Payment;
 use App\Models\Market\Product;
 
@@ -118,6 +119,23 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Product::class);
     }
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    // public function before(User $user, $ability)
+    // {
+    //     // if($user->is_supper_admin === true){
+    //     //     return true;
+    //     // }
+
+    //     // if($user->is_blocked === true){
+    //     //     return false;
+    //     // }
+        
+    // }
 
 
 }

@@ -59,9 +59,15 @@
                                     checked      
                                     @endif>
                                 </td>
-                                <td>{{$admin->user_type == 1 ? 'سوپرادمین' : 'ادمین'}}</td>
+                                <td>
+                                    @forelse ($admin->roles as $role)
+                                        <div>{{$role->name}}</div>
+                                    @empty
+                                       <div class="text-danger">نقشی یافت نشد</div> 
+                                    @endforelse
+                                </td>
                                 <td class="text-start width-22-rem">
-                                    <a href="#" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> نقش</a>
+                                    <a href="{{route('admin.user.admin-user.roles', $admin->id)}}" class="btn btn-sm btn-warning"><i class="fa fa-edit"></i> نقش</a>
                                     <a href="{{route('admin.user.admin-user.edit', $admin->id)}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i> ویرایش</a>
                                     <form class="d-inline" action="{{route('admin.user.admin-user.destroy', $admin->id)}}" method="post">
                                         @csrf

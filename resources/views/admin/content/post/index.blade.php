@@ -68,7 +68,17 @@
                                         </label>
                                     </td>
                                     <td class="text-start width-16-rem">
-                                        <a href="{{route('admin.content.post.edit', $post->id)}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i> ویرایش</a>
+                                        @can('update', $post)
+                                            <a href="{{route('admin.content.post.edit', $post->id)}}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i> ویرایش</a>
+                                        {{-- @elsecan('create', App\MOdels\Content\Post::class) --}}
+                                        @else
+                                            <a href="{{route('admin.content.post.edit', $post->id)}}" class="btn btn-sm btn-danger disabled"><i class="fa fa-edit"></i> دسترسی به ویرایش ندارید</a>
+                                        @endcan
+
+                                        {{-- @canany(['create', 'update'])
+
+                                        @elsecanany(['view'])
+                                        @endcanany --}}
                                         <form class="d-inline" action="{{route('admin.content.post.destroy', $post->id)}}" method="post">
                                             @csrf
                                             @method('delete')
